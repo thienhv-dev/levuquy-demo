@@ -134,12 +134,13 @@
 .st-polaroid figcaption span { font-size: 9.5px; letter-spacing: .24em; text-transform: uppercase; color: var(--faint); }
 .st-families { margin-top: 40px; padding: 26px 14px 24px; border: 1px solid var(--accent); outline: 1px solid var(--accent); outline-offset: 4px; text-align: center; }
 .st-families > p { max-width: 250px; margin: 0 auto 20px; font: italic 500 20px/1.4 var(--display); }
+.st-event-highlight { color: var(--stamp); font-size: inherit; font-weight: 700; }
 .st-families > div { display: grid; gap: 18px; }
 .st-families > div > div { display: grid; gap: 2px; }
 .st-families > div > div + div { padding-top: 18px; border-top: 1px solid var(--rule); }
-.st-families span { font-size: 9.5px; letter-spacing: .24em; text-transform: uppercase; color: var(--accent); }
+.st-families > div > div > span { font-size: 9.5px; letter-spacing: .24em; text-transform: uppercase; color: var(--accent); }
 .st-families strong { font-weight: 600; font-size: 15px; line-height: 1.55; white-space: nowrap; }
-.st-families small { margin-top: 2px; font-size: 12.5px; line-height: 1.6; color: var(--faint); text-wrap: balance; }
+.st-families small { margin-top: 2px; font-size: 12.5px; line-height: 1.6; color: var(--faint); text-wrap: pretty; }
 
 /* Cuộn phim */
 .st-film { display: flex; margin: 0 -22px; padding: 0 calc(50% - 108px); overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }
@@ -161,6 +162,9 @@
 .st-receipt li + li { border-top: 1px dotted var(--rule); }
 .st-receipt time { font: 14px var(--mono); letter-spacing: .04em; color: var(--accent); }
 .st-receipt li span { font-size: 14.5px; line-height: 1.55; text-wrap: balance; }
+.st-receipt .st-schedule-range { grid-template-columns: 54px 1fr; grid-template-rows: auto auto; justify-items: start; gap: 3px 16px; padding-block: 12px; text-align: left; }
+.st-receipt .st-schedule-range > span { grid-column: 2; grid-row: 1 / 3; align-self: center; font-size: 14.5px; line-height: 1.55; color: inherit; text-align: left; }
+.st-receipt .st-schedule-range .st-schedule-end { grid-column: 1; grid-row: 2; color: var(--faint); }
 .st-receipt .st-hand { font-size: 23px; color: var(--stamp); }
 .st-receipt .st-barcode { width: 62%; margin: 12px auto 0; }
 
@@ -238,7 +242,7 @@
 .st-gifts .is-open .st-gift-env i { transform: rotateX(180deg); }
 .st-gifts .is-open svg { opacity: 0; }
 .st-gift-card { display: grid; justify-items: center; gap: 4px; margin-top: 22px; padding: 24px 20px; background: var(--paper); box-shadow: var(--lift); text-align: center; color: var(--soft); animation: st-rise .5s cubic-bezier(.2, .8, .2, 1) both; }
-.st-gift-card img { width: 230px; margin-bottom: 10px; }
+.st-gift-card img { width: min(100%, 250px); aspect-ratio: 1; margin-bottom: 12px; padding: 10px; border: 1px solid var(--rule); background: #fff; box-shadow: var(--lift); object-fit: contain; }
 .st-gift-card strong { font: 500 27px var(--display); letter-spacing: .08em; color: var(--ink); }
 .st-gift-card .st-hand { font-size: 22px; line-height: 1.4; color: var(--ink); }
 .st-gift-card .st-button { margin-top: 12px; }

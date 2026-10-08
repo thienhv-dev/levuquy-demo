@@ -20,9 +20,9 @@ export const wedding = {
   // Lễ vu quy tại tư gia nhà gái. Bản đồ đang tìm theo tên thôn — thay `mapEmbed`/`mapLink` bằng link ghim đúng nhà khi có.
   venue: {
     name: "Tư Gia",
-    address: "Thôn Đông - An Hải - Đặc khu Lý Sơn, Tỉnh Quảng Ngãi",
-    mapEmbed: "https://maps.google.com/maps?q=Th%C3%B4n%20%C4%90%C3%B4ng%2C%20An%20H%E1%BA%A3i%2C%20L%C3%BD%20S%C6%A1n%2C%20Qu%E1%BA%A3ng%20Ng%C3%A3i&z=15&output=embed",
-    mapLink: "https://www.google.com/maps/search/?api=1&query=Th%C3%B4n%20%C4%90%C3%B4ng%2C%20An%20H%E1%BA%A3i%2C%20L%C3%BD%20S%C6%A1n%2C%20Qu%E1%BA%A3ng%20Ng%C3%A3i",
+    address: "Thôn Đông - An Hải - Đặc khu Lý Sơn, Tỉnh Quảng Ngãi (gần quán cà phê Cù Lao Xưa)",
+    mapEmbed: "https://maps.google.com/maps?q=Qu%C3%A1n%20c%C3%A0%20ph%C3%AA%20C%C3%B9%20Lao%20X%C6%B0a%2C%20Th%C3%B4n%20%C4%90%C3%B4ng%2C%20An%20H%E1%BA%A3i%2C%20L%C3%BD%20S%C6%A1n%2C%20Qu%E1%BA%A3ng%20Ng%C3%A3i&z=16&output=embed",
+    mapLink: "https://www.google.com/maps/search/?api=1&query=Qu%C3%A1n%20c%C3%A0%20ph%C3%AA%20C%C3%B9%20Lao%20X%C6%B0a%2C%20Th%C3%B4n%20%C4%90%C3%B4ng%2C%20An%20H%E1%BA%A3i%2C%20L%C3%BD%20S%C6%A1n%2C%20Qu%E1%BA%A3ng%20Ng%C3%A3i",
   },
 
   heroPhoto: photo("LYN07000"),
@@ -32,7 +32,7 @@ export const wedding = {
   ],
 
   ceremonies: [
-    { title: "Lễ vu quy", time: "09:30" },
+    { title: "Lễ vu quy", time: "07:00–09:00" },
     { title: "Tiệc chung vui", time: "11:00" },
   ],
 
@@ -51,19 +51,18 @@ export const wedding = {
   ],
 
   schedule: [
-    { time: "09:00", title: "Chào mừng đến với ngôi nhà của chúng tôi" },
-    { time: "09:15", title: "Đón khách & ổn định chỗ ngồi" },
-    { time: "09:30", title: "Lễ vu quy" },
+    { time: "06:45", title: "Đón khách & ổn định chỗ ngồi" },
+    { time: "07:00", endTime: "09:00", title: "Cử hành lễ vu quy" },
     { time: "11:00", title: "Tiệc cưới & giao lưu" },
   ],
 
   thanks: "Sự hiện diện của Quý Khách là niềm vinh hạnh cho gia đình chúng tôi. Rất hân hạnh được đón tiếp!",
 
-  gallery: ["LYN06653", "LYN06530", "LYN06301", "LYN06615", "LYN06272", "LYN06278", "LYN06236", "LYN06714", "LYN06920", "LYN06954", "LYN07049", "LYN06763", "LYN07000"].map(photo),
+  gallery: ["LYN06272", "LYN06530", "LYN06653", "LYN06615", "LYN06278", "LYN06714", "LYN06236", "LYN06920", "LYN06954", "LYN07049", "LYN06763", "LYN07000"].map(photo),
 
   // Mừng cưới — `qr` là ảnh trong public (đang dùng mã mẫu, thay bằng mã thật khi có), `note` là dòng chú thích dưới mã.
   gifts: [
-    { side: "Mừng cưới", bank: "", number: "", holder: "", qr: "/thiep/qr-mock.svg", note: "Mã QR mẫu — thông tin chuyển khoản sẽ được cập nhật sau." },
+    { side: "Mừng cưới", bank: "BVBANK · Ngân hàng Bản Việt", number: "0257041042375", holder: "NGUYEN THI TAI", qr: "/thiep/qr-mung-cuoi.png", note: "Quét mã QR để gửi lời chúc mừng đến chúng mình nhé ♡" },
   ],
 
   music: "/ido.mp3",

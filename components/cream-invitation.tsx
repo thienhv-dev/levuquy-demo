@@ -266,7 +266,7 @@ export function CreamInvitation() {
           {[first, second].map((person, index) => <figure key={person.full} className={`st-polaroid ${index ? "tr" : "tl"}`} data-reveal><span className="st-tape" aria-hidden="true" /><Picture photo={person.photo} alt={`${person === groom ? "Chú rể" : "Cô dâu"} ${person.full}`} /><figcaption><b className="st-hand">{person.short}</b><span>{person.role}</span></figcaption></figure>)}
         </div>
         <div className="st-families" data-reveal>
-          <p>Trân trọng báo tin {wedding.event.toLowerCase()} của con chúng tôi</p>
+          <p>Trân trọng báo tin <span className="st-event-highlight">{wedding.event.toLowerCase()}</span> của con chúng tôi</p>
           <div>{wedding.families.map(family => <div key={family.side}><span>{family.side}</span>{family.parents.map(parent => <strong key={parent}>{parent}</strong>)}<small>{family.address}</small></div>)}</div>
         </div>
       </section>
@@ -280,7 +280,9 @@ export function CreamInvitation() {
         <Heading no="05" title="Chương trình" />
         <div className="st-shadow tr" data-reveal><div className="st-receipt">
           <p className="st-mono">Programme · {shortDate}</p>
-          <ol>{wedding.schedule.map(item => <li key={item.title}><time>{item.time}</time><span>{item.title}</span></li>)}</ol>
+          <ol>{wedding.schedule.map(item => <li className={item.endTime ? "st-schedule-range" : undefined} key={item.title}>
+            <time>{item.time}</time><span>{item.title}</span>{item.endTime && <time className="st-schedule-end">{item.endTime}</time>}
+          </li>)}</ol>
           <p className="st-hand">hẹn gặp cả nhà nhé ♡</p>
           <i className="st-barcode" aria-hidden="true" />
         </div></div>
