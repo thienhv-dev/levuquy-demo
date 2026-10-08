@@ -58,7 +58,7 @@ export const wedding = {
 
   thanks: "Sự hiện diện của Quý Khách là niềm vinh hạnh cho gia đình chúng tôi. Rất hân hạnh được đón tiếp!",
 
-  gallery: ["LYN06653", "LYN06530", "LYN06301", "LYN06615", "LYN06278", "LYN06236", "LYN06714", "LYN06920", "LYN06954", "LYN07049", "LYN06763"].map(photo),
+  gallery: ["LYN06653", "LYN06530", "LYN06301", "LYN06615", "LYN06272", "LYN06278", "LYN06236", "LYN06714", "LYN06920", "LYN07049", "LYN06763", "LYN07000"].map(photo),
 
   // Mừng cưới — `qr` là ảnh trong public (đang dùng mã mẫu, thay bằng mã thật khi có), `note` là dòng chú thích dưới mã.
   gifts: [
