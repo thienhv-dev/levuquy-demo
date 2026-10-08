@@ -38,7 +38,7 @@ export const wedding = {
 
   families: [
     { side: "Nhà gái", parents: ["Ông Nguyễn Văn Thành", "Bà Bùi Thị Hoa"], address: "Thôn Đông - An Hải, Đặc khu Lý Sơn - Tỉnh Quảng Ngãi" },
-    { side: "Nhà trai", parents: ["Ông Bùi Chưa", "Bà Dương Thị Thanh Tâm"], address: "Thôn Đông - An Hải, Đặc khu Lý Sơn - Tỉnh Quảng Ngãi" },
+    { side: "Nhà trai", parents: ["Ông Bùi Chưa", "Bà Dương Thị Thanh Tâm"], address: "Thôn Tây - An Hải, Đặc khu Lý Sơn - Tỉnh Quảng Ngãi" },
   ],
 
   // Cuộn phim: bộ ảnh phông đỏ, mỗi khung một câu lục bát (xuống dòng bằng \n).
