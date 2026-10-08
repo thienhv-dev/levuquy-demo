@@ -7,15 +7,18 @@ import { wedding, type Photo } from "@/lib/wedding-data"
 
 const pad = (value: number) => String(value).padStart(2, "0")
 const { date, groom, bride, venue } = wedding
+// Thiệp vu quy ghi nhà gái, cô dâu trước; thiệp thành hôn thì ngược lại.
+const [first, second] = wedding.brideFirst ? [bride, groom] : [groom, bride]
 const shortDate = `${pad(date.day)}.${pad(date.month)}.${date.year}`
-const defaultGuest = "Quý khách"
+// Chữ gọi chung khi link không kèm ?to=Tên — thiệp đăng công khai nên dùng cách gọi hợp mọi vai vế.
+const defaultGuest = "Cả nhà"
 
 function Heading({ no, title, note }: { no: string; title: string; note?: string }) {
   return <header className="st-heading" data-reveal><span className="st-mono">{no}</span><h2>{title}</h2>{note && <p className="st-hand">{note}</p>}</header>
 }
 
-function Picture({ photo, alt, small }: { photo: Photo; alt: string; small?: boolean }) {
-  return <img src={getImagePath(small ? photo.thumb : photo.src)} alt={alt} loading="lazy" decoding="async" />
+function Picture({ photo, alt }: { photo: Photo; alt: string }) {
+  return <img src={getImagePath(photo.light)} alt={alt} loading="lazy" decoding="async" />
 }
 
 /* Dấu bưu điện: vòng chữ chạy quanh ngày cưới và mấy nét sóng huỷ tem. */
@@ -23,7 +26,7 @@ function Postmark() {
   return <svg className="st-postmark" viewBox="0 0 200 120" aria-hidden="true">
     <defs><path id="st-postmark-ring" d="M18,60 a42,42 0 1,1 84,0 a42,42 0 1,1 -84,0" /></defs>
     <circle cx="60" cy="60" r="55" /><circle cx="60" cy="60" r="29" />
-    <text className="st-postmark-ring"><textPath href="#st-postmark-ring" textLength={258}>{`${groom.short} & ${bride.short} · wedding day ·`.toUpperCase()}</textPath></text>
+    <text className="st-postmark-ring"><textPath href="#st-postmark-ring" textLength={258}>{`${first.full} & ${second.full} ·`.toUpperCase()}</textPath></text>
     <text className="st-postmark-day" x="60" y="59" textAnchor="middle">{pad(date.day)}.{pad(date.month)}</text>
     <text className="st-postmark-year" x="60" y="73" textAnchor="middle">{date.year}</text>
     {[38, 52, 66, 80].map(y => <path key={y} d={`M120,${y} q10,-9 20,0 t20,0 t20,0 t20,0`} />)}
@@ -36,7 +39,7 @@ function Cover({ guest, onStart, onOpen }: { guest: string; onStart: () => void;
   return <div className={`st-cover ${open ? "is-open" : ""}`} role="dialog" aria-modal="true" aria-label="Mở thiệp cưới" onAnimationEnd={event => { if (event.animationName === "st-cover-out") onOpen() }}>
     <p className="st-cover-to"><span className="st-label">Thân gửi</span><strong className="st-hand">{guest}</strong></p>
     <div className="st-env">
-      <div className="st-env-letter"><span className="st-mono">Wedding invitation</span><b>{groom.short}<em>&</em>{bride.short}</b><span className="st-mono">{shortDate}</span></div>
+      <div className="st-env-letter"><span className="st-mono">Wedding invitation</span><b>{first.full}<em>&</em>{second.full}</b><span className="st-mono">{shortDate}</span></div>
       <div className="st-env-front" />
       <div className="st-env-flap" />
       <button autoFocus className="st-seal" onClick={() => { onStart(); setOpen(true) }} aria-label="Mở thiệp cưới">{wedding.monogram}</button>
@@ -79,6 +82,34 @@ function Countdown() {
   </div>
 }
 
+/* Cuộn phim: tự lướt sang khung kế mỗi vài giây khi đang nằm trong màn hình; khách chạm vào là dừng hẳn để tự vuốt. */
+function Film() {
+  const strip = useRef<HTMLOListElement>(null)
+  useEffect(() => {
+    const node = strip.current
+    if (!node || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return
+    let visible = false
+    let timer: ReturnType<typeof setInterval> | undefined
+    const step = () => {
+      if (!visible || document.hidden) return
+      const frame = node.firstElementChild?.clientWidth ?? 260
+      const atEnd = node.scrollLeft + node.clientWidth >= node.scrollWidth - 4
+      node.scrollTo({ left: atEnd ? 0 : node.scrollLeft + frame, behavior: "smooth" })
+    }
+    const observer = new IntersectionObserver(([entry]) => { visible = entry.isIntersecting }, { threshold: 0.6 })
+    const stop = () => { clearInterval(timer); observer.disconnect() }
+    observer.observe(node)
+    timer = setInterval(step, 3800)
+    node.addEventListener("pointerdown", stop, { once: true })
+    node.addEventListener("wheel", stop, { once: true, passive: true })
+    return () => { stop(); node.removeEventListener("pointerdown", stop); node.removeEventListener("wheel", stop) }
+  }, [])
+  return <ol ref={strip} className="st-film" data-reveal>{wedding.story.map((item, index) => <li key={item.title}>
+    <div className="st-film-frame"><Picture photo={item.photo} alt={item.title} /><span className="st-mono">{pad(index + 1)}A</span></div>
+    <p className="st-label">{item.when}</p><h3>{item.title}</h3><p>{item.text}</p>
+  </li>)}</ol>
+}
+
 /* Album: một xấp ảnh polaroid — chạm tấm trên cùng để lật sang tấm kế. */
 function Gallery() {
   const photos = wedding.gallery
@@ -96,7 +127,7 @@ function Gallery() {
   const step = (direction: number) => setOpened(value => value === null ? value : (value + direction + photos.length) % photos.length)
   return <>
     <div className="st-deck" data-reveal>
-      {[3, 2, 1, 0].map(offset => <button key={photos[at(offset)].src} className={`st-deck-card is-p${offset} ${!offset && leaving ? "is-leaving" : ""}`} tabIndex={offset ? -1 : 0} aria-hidden={offset > 0} onClick={next} aria-label="Xem ảnh kế tiếp">
+      {[3, 2, 1, 0].map(offset => <button key={photos[at(offset)].light} className={`st-deck-card is-p${offset} ${!offset && leaving ? "is-leaving" : ""}`} tabIndex={offset ? -1 : 0} aria-hidden={offset > 0} onClick={next} aria-label="Xem ảnh kế tiếp">
         <Picture photo={photos[at(offset)]} alt={`Ảnh cưới ${at(offset) + 1}`} />
         <span className="st-hand">tấm số {at(offset) + 1}</span>
       </button>)}
@@ -107,9 +138,9 @@ function Gallery() {
       <button onClick={next} aria-label="Ảnh kế tiếp"><ChevronRight size={18} strokeWidth={1.5} /></button>
       <button onClick={() => open(index)} aria-label="Phóng lớn ảnh"><Maximize2 size={15} strokeWidth={1.5} /></button>
     </div>
-    <div className="st-contact" data-reveal>{photos.map((item, target) => <button key={item.src} className={target === index ? "is-current" : ""} onClick={() => setIndex(target)} aria-label={`Chọn ảnh ${target + 1}`}><Picture photo={item} alt="" small /></button>)}</div>
+    <div className="st-contact" data-reveal>{photos.map((item, target) => <button key={item.light} className={target === index ? "is-current" : ""} onClick={() => setIndex(target)} aria-label={`Chọn ảnh ${target + 1}`}><Picture photo={item} alt="" /></button>)}</div>
     <dialog ref={lightbox} className="st-lightbox" onClose={() => setOpened(null)} onClick={event => { if (event.target === lightbox.current) lightbox.current.close() }} onKeyDown={event => { if (event.key === "ArrowLeft") step(-1); if (event.key === "ArrowRight") step(1) }}>
-      {opened !== null && <img src={getImagePath(photos[opened].src)} alt={`Ảnh cưới ${opened + 1}`} />}
+      {opened !== null && <img src={getImagePath(photos[opened].full)} alt={`Ảnh cưới ${opened + 1}`} />}
       <button className="st-lightbox-close" onClick={() => lightbox.current?.close()} aria-label="Đóng ảnh"><X size={20} /></button>
       <button className="st-lightbox-arrow is-prev" onClick={() => step(-1)} aria-label="Ảnh trước"><ChevronLeft size={22} /></button>
       <button className="st-lightbox-arrow is-next" onClick={() => step(1)} aria-label="Ảnh tiếp theo"><ChevronRight size={22} /></button>
@@ -188,11 +219,11 @@ export function CreamInvitation() {
     <div className="st-desk">
       <section className="st-hero">
         <p className="st-mono" data-reveal>Wedding invitation · No. {pad(date.day)}{pad(date.month)}{String(date.year).slice(2)}</p>
-        <h1 data-reveal><span>{groom.short}</span><em>&</em><span>{bride.short}</span></h1>
+        <h1 data-reveal><span>{first.full}</span><em>&</em><span>{second.full}</span></h1>
         <p className="st-hand st-hero-note" data-reveal>chúng mình cưới!</p>
         <div className="st-stamp-wrap" data-reveal>
           <div className="st-shadow"><div className="st-stamp">
-            <img src={getImagePath(wedding.heroPhoto.src)} alt={`${groom.short} và ${bride.short} trong ngày chụp ảnh cưới`} />
+            <img src={getImagePath(wedding.heroPhoto.light)} alt={`${first.short} và ${second.short} trong ngày chụp ảnh cưới`} />
             <p><span className="st-hand">save the date</span><span className="st-mono">{shortDate}</span></p>
           </div></div>
           <Postmark />
@@ -207,7 +238,7 @@ export function CreamInvitation() {
           <span className="st-tape" aria-hidden="true" />
           <p>Thân gửi <b>{guest}</b>,</p>
           {wedding.invitation.map(text => <p key={text}>{text}</p>)}
-          <p className="st-letter-sign">Thương mến,<br />{groom.short} & {bride.short}</p>
+          <p className="st-letter-sign">Thương mến,<br />{first.short} & {second.short}</p>
         </article>
       </section>
 
@@ -216,7 +247,7 @@ export function CreamInvitation() {
         <div className="st-shadow tr" data-reveal><div className="st-ticket">
           <div className="st-ticket-main">
             <p className="st-mono">Admit one · Wedding day</p>
-            <h3>{groom.short} <em>&</em> {bride.short}</h3>
+            <h3>{first.full} <em>&</em> {second.full}</h3>
             <dl>
               <div><dt>Ngày</dt><dd>{shortDate}</dd></div>
               <div><dt>Thứ</dt><dd>{date.weekday}</dd></div>
@@ -232,29 +263,25 @@ export function CreamInvitation() {
       <section>
         <Heading no="03" title="Hai nhân vật chính" />
         <div className="st-polaroids">
-          <figure className="st-polaroid tl" data-reveal><span className="st-tape" aria-hidden="true" /><Picture photo={groom.photo} alt={`Chú rể ${groom.full}`} /><figcaption><b className="st-hand">{groom.short}</b><span>{groom.role}</span></figcaption></figure>
-          <figure className="st-polaroid tr" data-reveal><span className="st-tape" aria-hidden="true" /><Picture photo={bride.photo} alt={`Cô dâu ${bride.full}`} /><figcaption><b className="st-hand">{bride.short}</b><span>{bride.role}</span></figcaption></figure>
+          {[first, second].map((person, index) => <figure key={person.full} className={`st-polaroid ${index ? "tr" : "tl"}`} data-reveal><span className="st-tape" aria-hidden="true" /><Picture photo={person.photo} alt={`${person === groom ? "Chú rể" : "Cô dâu"} ${person.full}`} /><figcaption><b className="st-hand">{person.short}</b><span>{person.role}</span></figcaption></figure>)}
         </div>
         <div className="st-families" data-reveal>
-          <p>Trân trọng báo tin lễ thành hôn của con chúng tôi</p>
+          <p>Trân trọng báo tin {wedding.event.toLowerCase()} của con chúng tôi</p>
           <div>{wedding.families.map(family => <div key={family.side}><span>{family.side}</span>{family.parents.map(parent => <strong key={parent}>{parent}</strong>)}<small>{family.address}</small></div>)}</div>
         </div>
       </section>
 
       <section>
-        <Heading no="04" title="Cuộn phim của hai đứa" note="vuốt ngang để xem tiếp →" />
-        <ol className="st-film" data-reveal>{wedding.story.map((item, index) => <li key={item.title}>
-          <div className="st-film-frame"><Picture photo={item.photo} alt={item.title} /><span className="st-mono">{pad(index + 1)}A</span></div>
-          <p className="st-label">{item.when}</p><h3>{item.title}</h3><p>{item.text}</p>
-        </li>)}</ol>
+        <Heading no="04" title="Cuộn phim của hai đứa" note="tự lướt · vuốt ngang để xem tiếp →" />
+        <Film />
       </section>
 
       <section>
         <Heading no="05" title="Chương trình" />
         <div className="st-shadow tr" data-reveal><div className="st-receipt">
           <p className="st-mono">Programme · {shortDate}</p>
-          <ol>{wedding.schedule.map(item => <li key={item.time}><time>{item.time}</time><span>{item.title}</span></li>)}</ol>
-          <p className="st-hand">hẹn gặp bạn nhé ♡</p>
+          <ol>{wedding.schedule.map(item => <li key={item.title}><time>{item.time}</time><span>{item.title}</span></li>)}</ol>
+          <p className="st-hand">hẹn gặp cả nhà nhé ♡</p>
           <i className="st-barcode" aria-hidden="true" />
         </div></div>
       </section>
@@ -291,7 +318,7 @@ export function CreamInvitation() {
         <p className="st-hand st-thanks" data-reveal>Cảm ơn</p>
         <p data-reveal>{wedding.thanks}</p>
         <div data-reveal><Postmark /></div>
-        <p className="st-mono" data-reveal>{groom.short} & {bride.short} · {shortDate}</p>
+        <p className="st-label" data-reveal>{first.short} + {second.short} · {shortDate}</p>
       </section>
     </div>
 
