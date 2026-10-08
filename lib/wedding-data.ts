@@ -1,57 +1,65 @@
 /**
  * Toàn bộ nội dung thiệp nằm ở đây — đổi tên, ngày, địa điểm, ảnh... chỉ cần sửa file này.
- * Ảnh đặt trong public/thiep (bản `_s` là ảnh thu nhỏ cho lưới album).
+ * Ảnh đặt trong public/thiep: `TÊN_s.jpg` là ảnh nhẹ hiển thị trên thiệp, `TÊN.jpg` là ảnh gốc mở khi phóng lớn.
  */
-const photo = (name: string) => ({ src: `/thiep/${name}.jpg`, thumb: `/thiep/${name}_s.jpg` })
+const photo = (name: string) => ({ light: `/thiep/${name}_s.jpg`, full: `/thiep/${name}.jpg` })
 
 export const wedding = {
-  groom: { short: "Văn Thiện", full: "Hồ Văn Thiện", role: "Chú rể", photo: photo("ROM_6984") },
-  bride: { short: "Thanh Tuyền", full: "Trần Thị Thanh Tuyền", role: "Cô dâu", photo: photo("ROM_6615") },
-  monogram: "T & T",
+  // `short` là tên gọi thân mật (chữ ký, lời đếm ngược), `full` là họ tên in trên thiệp.
+  groom: { short: "Văn Đủ", full: "Bùi Văn Đủ", role: "Chú rể", photo: photo("LYN06714") },
+  bride: { short: "Thị Tài", full: "Nguyễn Thị Tài", role: "Cô dâu", photo: photo("LYN06272") },
+  monogram: "T & Đ",
+  event: "Lễ vu quy",
+  // Lễ vu quy: cô dâu và nhà gái đứng trước. Đặt false cho thiệp thành hôn bên nhà trai.
+  brideFirst: true,
 
   // Ngày cưới — `iso` dùng cho đếm ngược, các trường còn lại dùng để hiển thị.
   date: { iso: "2026-10-25T11:00:00+07:00", day: 25, month: 10, year: 2026, weekday: "Chủ nhật", time: "11:00" },
   lunar: "Nhằm ngày 16 tháng 9 năm Bính Ngọ",
 
+  // Lễ vu quy tại tư gia nhà gái. Bản đồ đang tìm theo tên thôn — thay `mapEmbed`/`mapLink` bằng link ghim đúng nhà khi có.
   venue: {
-    name: "Nhà hàng tiệc cưới Quảng Đại 2",
-    address: "Số 190, Đường 30/4, Phường Hoà Cường, TP. Đà Nẵng",
-    mapEmbed: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3834.4833867911398!2d108.21277117550467!3d16.0403865846349!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x314219d8267c8721%3A0xeefec422af38796c!2zTmjDoCBow6BuZyB0aeG7h2MgY8aw4bubaSBRdeG6o25nIMSQ4bqhaSAy!5e0!3m2!1sen!2s!4v1760424500484!5m2!1sen!2s",
-    mapLink: "https://maps.app.goo.gl/RmsV61ViRfQJqoud8",
+    name: "Tư Gia",
+    address: "Thôn Đông - An Hải - Đặc khu Lý Sơn, Tỉnh Quảng Ngãi",
+    mapEmbed: "https://maps.google.com/maps?q=Th%C3%B4n%20%C4%90%C3%B4ng%2C%20An%20H%E1%BA%A3i%2C%20L%C3%BD%20S%C6%A1n%2C%20Qu%E1%BA%A3ng%20Ng%C3%A3i&z=15&output=embed",
+    mapLink: "https://www.google.com/maps/search/?api=1&query=Th%C3%B4n%20%C4%90%C3%B4ng%2C%20An%20H%E1%BA%A3i%2C%20L%C3%BD%20S%C6%A1n%2C%20Qu%E1%BA%A3ng%20Ng%C3%A3i",
   },
 
-  heroPhoto: photo("DII_4575"),
+  heroPhoto: photo("LYN07000"),
   invitation: [
     "Chúng mình đã gặp được người khiến mỗi ngày trở nên dịu dàng hơn. Từ những điều bình dị, yêu thương lớn lên và trở thành lời hẹn ước.",
-    "Nay chúng mình cùng nhau bước vào một hành trình mới. Rất mong được đón bạn đến chung vui, chứng kiến và gửi lời chúc phúc cho ngày trọng đại.",
+    "Trân trọng kính mời cả nhà đến dự tiệc chung vui cùng gia đình chúng mình tại tư gia. Sự hiện diện của cả nhà là niềm vinh hạnh cho gia đình chúng mình.",
   ],
 
   ceremonies: [
-    { title: "Lễ thành hôn", time: "09:30" },
-    { title: "Tiệc cưới", time: "11:00" },
+    { title: "Lễ vu quy", time: "09:30" },
+    { title: "Tiệc chung vui", time: "11:00" },
   ],
 
   families: [
-    { side: "Nhà trai", parents: ["Ông Hồ Cam", "Bà Nguyễn Thị Trang"], address: "Số 50, Đường Phạm Cự Lượng, Phường An Hải, TP. Đà Nẵng" },
-    { side: "Nhà gái", parents: ["Bà Lê Thị Thu Hà"], address: "Tổ 5, Thôn Thái Đông, Xã Thăng Trường, TP. Đà Nẵng" },
+    { side: "Nhà gái", parents: ["Ông Nguyễn Văn Thành", "Bà Bùi Thị Hoa"], address: "Thôn Đông - An Hải, Đặc khu Lý Sơn - Tỉnh Quảng Ngãi" },
+    { side: "Nhà trai", parents: ["Ông Bùi Chưa", "Bà Dương Thị Thanh Tâm"], address: "Thôn Đông - An Hải, Đặc khu Lý Sơn - Tỉnh Quảng Ngãi" },
   ],
 
+  // Cuộn phim: bộ ảnh phông đỏ, mỗi khung một câu lục bát (xuống dòng bằng \n).
   story: [
-    { when: "Save the date", title: "Vẫn gặp anh", text: "Đi một vòng lớn rồi vẫn gặp anh, từ đó, thế gian bỗng hóa dịu dàng.", photo: photo("DII_4512") },
-    { when: "Trọn vẹn", title: "Mãi một đời", text: "Tên của anh chỉ vỏn vẹn vài chữ, dù có rời rạc, chẳng thành câu, nhưng trong tim em luôn ấp ủ, chỉ nguyện bên nhau mãi một đời.", photo: photo("DII_4110") },
-    { when: "Sau tất cả", title: "Mỗi phút giây", text: "Không cần một ngày đặc biệt nào cả, vì anh yêu em mỗi phút giây. Tình yêu này chẳng đợi một dịp để bày tỏ, mà luôn hiện hữu mỗi ngày.", photo: photo("DII_3899") },
+    { when: "Áo cưới", title: "Ngày em làm cô dâu", text: "Em về khoác áo cô dâu,\nBao nhiêu thương nhớ bắt đầu từ đây.", photo: photo("LYN06763") },
+    { when: "Nắm tay", title: "Đường xa cũng gần", text: "Tay anh nắm lấy tay em,\nĐường xa mấy cũng êm đềm mà đi.", photo: photo("LYN07049") },
+    { when: "Ánh mắt", title: "Chẳng cần nói", text: "Nhìn nhau chẳng nói nên lời,\nMà nghe trong mắt một trời yêu thương.", photo: photo("LYN06954") },
+    { when: "Nụ cười", title: "Thương từ đó", text: "Thương em từ một nụ cười,\nĐể rồi thương cả một đời về sau.", photo: photo("LYN06920") },
+    { when: "Hôm nay", title: "Về chung một nhà", text: "Hôm nay về một nhà chung,\nTrăm năm xin được đi cùng với nhau.", photo: photo("LYN07000") },
   ],
 
   schedule: [
     { time: "09:00", title: "Chào mừng đến với ngôi nhà của chúng tôi" },
     { time: "09:15", title: "Đón khách & ổn định chỗ ngồi" },
-    { time: "09:30", title: "Lễ thành hôn" },
+    { time: "09:30", title: "Lễ vu quy" },
     { time: "11:00", title: "Tiệc cưới & giao lưu" },
   ],
 
-  thanks: "Cảm ơn bạn đã dành thời gian ghé thăm trang web của chúng tôi. Sự hiện diện của bạn trong ngày trọng đại này sẽ là món quà ý nghĩa nhất với chúng tôi.",
+  thanks: "Sự hiện diện của Quý Khách là niềm vinh hạnh cho gia đình chúng tôi. Rất hân hạnh được đón tiếp!",
 
-  gallery: ["DII_4575", "DII_4140", "DII_4452", "DII_3638", "DII_4512", "DII_3457", "DII_3899", "DII_4110", "DII_4933", "ROM_6639", "ROM_6818", "ROM_7360", "ROM_6615", "ROM_6984", "ROM_7527"].map(photo),
+  gallery: ["LYN06653", "LYN06530", "LYN06301", "LYN06615", "LYN06272", "LYN06278", "LYN06236", "LYN06714", "LYN06920", "LYN06954", "LYN07049", "LYN06763", "LYN07000"].map(photo),
 
   // Mừng cưới — `qr` là ảnh trong public (đang dùng mã mẫu, thay bằng mã thật khi có), `note` là dòng chú thích dưới mã.
   gifts: [
