@@ -13,6 +13,33 @@ const shortDate = `${pad(date.day)}.${pad(date.month)}.${date.year}`
 // Chữ gọi chung khi link không kèm ?to=Tên — thiệp đăng công khai nên dùng cách gọi hợp mọi vai vế.
 const defaultGuest = "Cả nhà"
 
+/**
+ * Tên khách mời trên link, theo thứ tự ưu tiên:
+ *   ?g=…  — tên mã hoá Base64 URL (UTF-8) từ trang tạo link; chỉ gồm chữ, số, "-", "_" nên dán vào Messenger/Zalo không bị cắt
+ *   ?to=… — link cũ: Base64 của tên đã encodeURIComponent, hoặc tên viết thẳng (?to=Cô+Hoa)
+ */
+function readGuest(params: URLSearchParams) {
+  const token = params.get("g")?.trim()
+  if (token) {
+    try {
+      const binary = atob(token.replace(/-/g, "+").replace(/_/g, "/"))
+      return new TextDecoder("utf-8", { fatal: true }).decode(Uint8Array.from(binary, char => char.charCodeAt(0))).trim()
+    } catch {
+      // Chuỗi hỏng thì xem như không có tên.
+    }
+  }
+  const raw = params.get("to")?.trim()
+  if (!raw) return ""
+  try {
+    const decoded = decodeURIComponent(atob(raw))
+    // So khớp lại để không nhầm tên thuần ASCII trông giống chuỗi Base64.
+    if (btoa(encodeURIComponent(decoded)) === raw) return decoded
+  } catch {
+    // Không phải Base64: tên viết thẳng, URLSearchParams đã giải mã sẵn.
+  }
+  return raw
+}
+
 function Heading({ no, title, note }: { no: string; title: string; note?: string }) {
   return <header className="st-heading" data-reveal><span className="st-mono">{no}</span><h2>{title}</h2>{note && <p className="st-hand">{note}</p>}</header>
 }
@@ -178,10 +205,9 @@ export function CreamInvitation() {
   const root = useRef<HTMLElement>(null)
   const audio = useRef<HTMLAudioElement>(null)
 
-  // Tên khách mời tự động: thêm ?to=Tên+khách vào đường dẫn thiệp.
   useEffect(() => {
-    const to = new URLSearchParams(window.location.search).get("to")?.trim()
-    if (to) setGuest(to.slice(0, 60))
+    const name = readGuest(new URLSearchParams(window.location.search))
+    if (name) setGuest(name.slice(0, 60))
   }, [])
 
   // Tải lại trang thì luôn bắt đầu từ đầu thiệp, không để trình duyệt nhớ vị trí cuộn cũ.
